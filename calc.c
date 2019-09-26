@@ -9,11 +9,11 @@ int main()
     printf("Enter first num:\n");
     fgets(char1, 100, stdin);
     int num1 = atoi(char1);
+    printf("Enter sign(+,-,*,/)\n");
+    sign = getchar();
     printf("Enter second num:\n");
     fgets(char2, 100, stdin);
     int num2 = atoi(char2);
-    printf("Enter sign(+,-,*,/)\n");
-    sign = getchar();
     if(sign == '+'){
       result = num1 + num2;
     }
