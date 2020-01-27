@@ -1,6 +1,7 @@
 #include "main.h"
 #include "wiring.h"
 
+//Controls the two flapping spinning boys at the front of the robot
 void control_intake() {
 	if (btnSuck.isPressed()) {
 		left_intake.moveVelocity(100);
@@ -13,7 +14,14 @@ void control_intake() {
 		right_intake.moveVelocity(0);
 	}
 }
+//Controls the arms letting them lift up and down. Should be a right and left Motor
+void control_arm() {
 
+}
+//Controls the mechanism that allows standing the backplate vertical. One Motor
+void control_kicker() {
+
+}
 /**
  * Runs initialization code. This occurs as soon as the program is started.
  *
