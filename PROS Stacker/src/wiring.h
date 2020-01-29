@@ -4,8 +4,8 @@
 #define RIGHT_DRIVE_ONE_PORT -10
 #define RIGHT_DRIVE_TWO_PORT -18
 
-#define LEFT_INTAKE_PORT 1
-#define RIGHT_INTAKE_PORT -2
+#define LEFT_INTAKE_PORT 7
+#define RIGHT_INTAKE_PORT -8
 
 auto chassis = ChassisControllerBuilder()
     .withMotors({LEFT_DRIVE_ONE_PORT, LEFT_DRIVE_TWO_PORT}, {RIGHT_DRIVE_ONE_PORT, RIGHT_DRIVE_TWO_PORT})

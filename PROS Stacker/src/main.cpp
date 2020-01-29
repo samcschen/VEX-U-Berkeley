@@ -4,11 +4,11 @@
 //Controls the two flapping spinning boys at the front of the robot
 void control_intake() {
 	if (btnSuck.isPressed()) {
-		left_intake.moveVelocity(100);
-		right_intake.moveVelocity(100);
+		left_intake.moveVelocity(300);
+		right_intake.moveVelocity(300);
 	} else if (btnSpit.isPressed()) {
-		left_intake.moveVelocity(-100);
-		right_intake.moveVelocity(-100);
+		left_intake.moveVelocity(-300);
+		right_intake.moveVelocity(-300);
 	} else {
 		left_intake.moveVelocity(0);
 		right_intake.moveVelocity(0);
@@ -83,6 +83,7 @@ void opcontrol() {
 	while (true) {
 		chassis->getModel()->arcade(master.getAnalog(ControllerAnalog::leftY),
 		                            master.getAnalog(ControllerAnalog::rightX));
+    control_intake();
 		pros::delay(10);
 	}
 }
