@@ -2,11 +2,30 @@
 #include "wiring.h"
 
 //Controls the gripper mechanism. TBD
-void control_intake() {
+void control_gripper() {
+		if (btnGrab.isPressed()) {
+			left_gripper.moveVelocity(200);
+			right_gripper.moveVelocity(200);
+		} else if (btnRelease.isPressed()) {
+			left_gripper.moveVelocity(-200);
+			right_gripper.moveVelocity(-200);
+		} else {
+			left_gripper.moveVelocity(0);
+			right_gripper.moveVelocity(0);
+		}
 }
 //Controls the arms letting them lift up and down. Should be a right and left Motor
 void control_arm() {
-
+	if (btnLift.isPressed()){
+		left_lift.moveVelocity(100);
+		right_lift.moveVelocity(100);
+	} else if (btnDrop.isPressed()){
+		left_lift.moveVelocity(-100);
+		right_lift.moveVelocity(-100);
+	} else {
+		left_lift.moveVelocity(0);
+		right_lift.moveVelocity(0);
+	}
 }
 /**
  * Runs initialization code. This occurs as soon as the program is started.
@@ -67,6 +86,9 @@ void opcontrol() {
 	while (true) {
 		chassis->getModel()->arcade(master.getAnalog(ControllerAnalog::leftY),
 		                            master.getAnalog(ControllerAnalog::rightX));
+
+		control_arm();
+		control_gripper();
 		pros::delay(10);
 	}
 }

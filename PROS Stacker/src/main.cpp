@@ -4,11 +4,11 @@
 //Controls the two flapping spinning boys at the front of the robot
 void control_intake() {
 	if (btnSuck.isPressed()) {
-		left_intake.moveVelocity(300);
-		right_intake.moveVelocity(300);
+		left_intake.moveVelocity(200);
+		right_intake.moveVelocity(200);
 	} else if (btnSpit.isPressed()) {
-		left_intake.moveVelocity(-300);
-		right_intake.moveVelocity(-300);
+		left_intake.moveVelocity(-200);
+		right_intake.moveVelocity(-200);
 	} else {
 		left_intake.moveVelocity(0);
 		right_intake.moveVelocity(0);
@@ -16,7 +16,16 @@ void control_intake() {
 }
 //Controls the arms letting them lift up and down. Should be a right and left Motor
 void control_arm() {
-
+	if (btnLift.isPressed()){
+		left_lift.moveVelocity(100);
+		right_lift.moveVelocity(100);
+	} else if (btnDrop.isPressed()){
+		left_lift.moveVelocity(-100);
+		right_lift.moveVelocity(-100);
+	} else {
+		left_lift.moveVelocity(0);
+		right_lift.moveVelocity(0);
+	}
 }
 //Controls the mechanism that allows standing the backplate vertical. One Motor
 void control_kicker() {
@@ -33,6 +42,8 @@ void initialize() {
 	pros::lcd::set_text(1, "Hello PROS User!");
 	left_intake.setBrakeMode(AbstractMotor::brakeMode::hold);
 	right_intake.setBrakeMode(AbstractMotor::brakeMode::hold);
+	left_lift.setBrakeMode(AbstractMotor::brakeMode::hold);
+	right_lift.setBrakeMode(AbstractMotor::brakeMode::hold);
 }
 
 /**
@@ -53,6 +64,27 @@ void disabled() {}
  */
 void competition_initialize() {}
 
+void intake_cube_autonomous(int num_cubes) {
+	double prev_max_velocity = chassis->getMaxVelocity();
+	chassis->setMaxVelocity(50);
+	left_intake.moveVelocity(200);
+	right_intake.moveVelocity(200);
+	pros::delay(400);
+	double distance = 0.5 + (num_cubes - 1) * 5.5;
+	chassis->moveDistance(distance * 1_in);
+	pros::delay(100);
+	left_intake.moveVelocity(0);
+	right_intake.moveVelocity(0);
+	chassis->setMaxVelocity(prev_max_velocity);
+}
+
+void output_cube_autonomous() {
+	left_intake.moveVelocity(-100);
+	right_intake.moveVelocity(-100);
+	pros::delay(700);
+	left_intake.moveVelocity(0);
+	right_intake.moveVelocity(0);
+}
 /**
  * Runs the user autonomous code. This function will be started in its own task
  * with the default priority and stack size whenever the robot is enabled via
@@ -64,7 +96,11 @@ void competition_initialize() {}
  * will be stopped. Re-enabling the robot will restart the task, not re-start it
  * from where it left off.
  */
-void autonomous() {}
+void autonomous() {
+	chassis->setMaxVelocity(30);
+	intake_cube_autonomous(2);
+	output_cube_autonomous();
+}
 
 /**
  * Runs the operator control code. This function will be started in its own task
@@ -80,10 +116,13 @@ void autonomous() {}
  * task, not resume it from where it left off.
  */
 void opcontrol() {
+	chassis->setMaxVelocity(600);
 	while (true) {
 		chassis->getModel()->arcade(master.getAnalog(ControllerAnalog::leftY),
-		                            master.getAnalog(ControllerAnalog::rightX));
-    control_intake();
+                           master.getAnalog(ControllerAnalog::rightX));
+		control_arm();
+		control_kicker();
+		control_intake();
 		pros::delay(10);
 	}
 }
