@@ -75,6 +75,7 @@ void intake_cube_autonomous(int num_cubes) {
 	pros::delay(100);
 	left_intake.moveVelocity(0);
 	right_intake.moveVelocity(0);
+	chassis->moveDistance(distance * -1_in);
 	chassis->setMaxVelocity(prev_max_velocity);
 }
 
@@ -97,9 +98,33 @@ void output_cube_autonomous() {
  * from where it left off.
  */
 void autonomous() {
-	chassis->setMaxVelocity(30);
-	intake_cube_autonomous(2);
+	int direction = 1;//1 is blue, -1 is red
+	chassis->moveDistance(1_ft);
 	output_cube_autonomous();
+	chassis->moveDistance(-1_ft);
+	chassis->moveDistance(1_ft);
+	output_cube_autonomous();
+	chassis->moveDistance(-1_ft);
+	chassis->moveDistance(1_ft);
+	output_cube_autonomous();
+	chassis->moveDistance(-1_ft);
+	/*chassis->setState({direction * 2.75_in, 7.25_in, 0_deg});
+	chassis->setMaxVelocity(50);
+	chassis->driveToPoint({direction * 2.75_in, 16.75_in});
+	intake_cube_autonomous(1);
+	chassis->driveToPoint({direction * 12_in, 26.75_in});
+	chassis->driveToPoint({direction * 16.75_in, 26.75_in});
+	intake_cube_autonomous(1);
+	chassis->driveToPoint({direction * 36_in, 12_in});
+	output_cube_autonomous();
+	chassis->driveToPoint({direction * -55_in, 7_in});
+	chassis->driveToPoint({direction * -55_in, 50.75_in});
+	chassis->turnToAngle(direction * -90_deg);
+	chassis->driveToPoint({direction * -66.5_in, 50.75_in});
+	intake_cube_autonomous(1);
+	chassis->driveToPoint({direction * -60_in, 60.96_in});
+	chassis->driveToPoint({direction * -60_in, 12_in});
+	chassis->driveToPoint({direction * 	-74_in, 12_in});*/
 }
 
 /**

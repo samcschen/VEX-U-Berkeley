@@ -4,11 +4,11 @@
 //Controls the gripper mechanism. TBD
 void control_gripper() {
 		if (btnGrab.isPressed()) {
-			left_gripper.moveVelocity(200);
-			right_gripper.moveVelocity(200);
+			left_gripper.moveVelocity(100);
+			right_gripper.moveVelocity(100);
 		} else if (btnRelease.isPressed()) {
-			left_gripper.moveVelocity(-200);
-			right_gripper.moveVelocity(-200);
+			left_gripper.moveVelocity(-100);
+			right_gripper.moveVelocity(-100);
 		} else {
 			left_gripper.moveVelocity(0);
 			right_gripper.moveVelocity(0);
@@ -20,8 +20,8 @@ void control_arm() {
 		left_lift.moveVelocity(100);
 		right_lift.moveVelocity(100);
 	} else if (btnDrop.isPressed()){
-		left_lift.moveVelocity(-100);
-		right_lift.moveVelocity(-100);
+		left_lift.moveVelocity(-40);
+		right_lift.moveVelocity(-40);
 	} else {
 		left_lift.moveVelocity(0);
 		right_lift.moveVelocity(0);
@@ -36,6 +36,16 @@ void control_arm() {
 void initialize() {
 	pros::lcd::initialize();
 	pros::lcd::set_text(1, "Hello PROS User!");
+	left_gripper.setBrakeMode(AbstractMotor::brakeMode::hold);
+	right_gripper.setBrakeMode(AbstractMotor::brakeMode::hold);
+	left_lift.setBrakeMode(AbstractMotor::brakeMode::hold);
+	right_lift.setBrakeMode(AbstractMotor::brakeMode::hold);
+	left_lift.setEncoderUnits(AbstractMotor::encoderUnits::rotations);
+	right_lift.setEncoderUnits(AbstractMotor::encoderUnits::rotations);
+	left_gripper.setBrakeMode(AbstractMotor::brakeMode::hold);
+	right_gripper.setBrakeMode(AbstractMotor::brakeMode::hold);
+	left_gripper.setEncoderUnits(AbstractMotor::encoderUnits::rotations);
+	right_gripper.setEncoderUnits(AbstractMotor::encoderUnits::rotations);
 }
 
 /**
@@ -67,7 +77,43 @@ void competition_initialize() {}
  * will be stopped. Re-enabling the robot will restart the task, not re-start it
  * from where it left off.
  */
-void autonomous() {}
+void lift_arm() {
+	left_lift.moveRelative(3.5,100);
+	right_lift.moveRelative(3.5,100);
+	pros::delay(4000);
+}
+void lower_arm() {
+ left_lift.moveRelative(-3.5,70);
+ right_lift.moveRelative(-3.5,70);
+}
+void close_grabber() {
+	left_gripper.moveRelative(-4, 70);
+	right_gripper.moveRelative(-4, 70);
+}
+void open_grabber() {
+	left_gripper.moveRelative(4, 70);
+	right_gripper.moveRelative(4, 70);
+}
+void autonomous() {
+	int direction = 1; //1 is blue, -1 is red
+	close_grabber();
+	/*chassis->moveDistance(-1_ft);
+	chassis->moveDistance(1_ft);
+	chassis->moveDistance(-1_ft);
+	chassis->moveDistance(1_ft);
+	chassis->moveDistance(-1_ft);*/
+	/*chassis->setState({direction * -16.75_in, 7.25_in, 0_deg});
+	chassis->setMaxVelocity(50);
+	close_grabber();
+	chassis->driveToPoint({direction * -16.75_in, 37_in});
+	chassis->driveToPoint({direction * 0_in, 37_in});
+	chassis->turnToAngle(direction * 180_deg);
+	lift_arm();
+	chassis->driveToPoint({direction * 0_in, 35_in});
+	open_grabber();
+	chassis->driveToPoint({direction * 0_in, 37_in});
+	lower_arm();//Goal is to get a single cube*/
+}
 
 /**
  * Runs the operator control code. This function will be started in its own task

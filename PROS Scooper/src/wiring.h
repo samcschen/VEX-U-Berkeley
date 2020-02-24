@@ -1,18 +1,18 @@
 #include "main.h"
 //lifter boi ports
-#define LEFT_DRIVE_ONE_PORT 9
-#define LEFT_DRIVE_TWO_PORT 17
-#define RIGHT_DRIVE_ONE_PORT -10
-#define RIGHT_DRIVE_TWO_PORT -18
+#define LEFT_DRIVE_ONE_PORT 8
+#define LEFT_DRIVE_TWO_PORT 12
+#define RIGHT_DRIVE_ONE_PORT -9
+#define RIGHT_DRIVE_TWO_PORT -13
 
-#define LEFT_GRABBER_PORT 7
-#define RIGHT_GRABBER_PORT -8
+#define LEFT_GRABBER_PORT -1
+#define RIGHT_GRABBER_PORT 7
 
-#define LEFT_LIFT_PORT -3
+#define LEFT_LIFT_PORT -6
 #define RIGHT_LIFT_PORT 4
 
 auto chassis = ChassisControllerBuilder()
-    .withMotors({LEFT_DRIVE_ONE_PORT, LEFT_DRIVE_TWO_PORT}, {RIGHT_DRIVE_ONE_PORT, RIGHT_DRIVE_TWO_PORT})
+    .withMotors({LEFT_DRIVE_TWO_PORT, LEFT_DRIVE_ONE_PORT}, {RIGHT_DRIVE_TWO_PORT, RIGHT_DRIVE_ONE_PORT})
     .withDimensions(AbstractMotor::gearset::green, {{4_in, 11.9327809104_in}, imev5GreenTPR})
     .withOdometry()
     .buildOdometry();
