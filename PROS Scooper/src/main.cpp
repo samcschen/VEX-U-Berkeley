@@ -87,23 +87,20 @@ void lower_arm() {
  right_lift.moveRelative(-3.5,70);
 }
 void close_grabber() {
+	left_gripper.moveRelative(3, 70);
+	right_gripper.moveRelative(3, 70);
+}
+void open_grabber() {
 	left_gripper.moveRelative(-4, 70);
 	right_gripper.moveRelative(-4, 70);
 }
-void open_grabber() {
-	left_gripper.moveRelative(4, 70);
-	right_gripper.moveRelative(4, 70);
-}
 void autonomous() {
 	int direction = 1; //1 is blue, -1 is red
-	close_grabber();
-	/*chassis->moveDistance(-1_ft);
-	chassis->moveDistance(1_ft);
-	chassis->moveDistance(-1_ft);
-	chassis->moveDistance(1_ft);
-	chassis->moveDistance(-1_ft);*/
-	/*chassis->setState({direction * -16.75_in, 7.25_in, 0_deg});
+	//Start with cube already clamped close in bot
+	chassis->setState({0_in, 0_in, 90_deg});
 	chassis->setMaxVelocity(50);
+	chassis->driveToPoint({0_in, 10_in});
+	/*
 	close_grabber();
 	chassis->driveToPoint({direction * -16.75_in, 37_in});
 	chassis->driveToPoint({direction * 0_in, 37_in});
