@@ -77,14 +77,23 @@ void competition_initialize() {}
  * will be stopped. Re-enabling the robot will restart the task, not re-start it
  * from where it left off.
  */
-void lift_arm() {
-	left_lift.moveRelative(3.5,100);
-	right_lift.moveRelative(3.5,100);
-	pros::delay(4000);
+void lift_arm_mid() {
+	left_lift.moveRelative(1.8,70);
+	right_lift.moveRelative(1.8,70);
+	pros::delay(3000);
 }
-void lower_arm() {
- left_lift.moveRelative(-3.5,70);
- right_lift.moveRelative(-3.5,70);
+void lower_arm_mid() {
+ left_lift.moveRelative(-1.8,70);
+ right_lift.moveRelative(-1.8,70);
+}
+void lift_arm_short() {
+	left_lift.moveRelative(1.6,70);
+	right_lift.moveRelative(1.6,70);
+	pros::delay(3000);
+}
+void lower_arm_short() {
+ left_lift.moveRelative(-1.6,70);
+ right_lift.moveRelative(-1.6,70);
 }
 void close_grabber() {
 	left_gripper.moveRelative(3, 70);
@@ -94,10 +103,23 @@ void open_grabber() {
 	left_gripper.moveRelative(-4, 70);
 	right_gripper.moveRelative(-4, 70);
 }
+void place_mid_tower() {
+	//Start 20.5 inches away from center of tower
+	lift_arm_mid(); //lift arm holding cube to mid tower height
+	chassis->setMaxVelocity(50);
+	chassis->moveDistance(14_in); //moves up to tower
+	open_grabber(); //place cube in tower
+	pros::delay(2000);
+	chassis->moveDistance(-14_in); //backs up from tower
+	lower_arm_mid(); //return to start
+}
 void autonomous() {
 	int direction = 1; //1 is blue, -1 is red
-	//Start with cube already clamped close in bot
-	//All x locations are reversed cause IDK
+	//Start with cube clamped
+
+	chassis->setState({0_in, 0_in, 90_deg}); //facing +y-axis
+
+
 	/*
 	close_grabber();
 	chassis->driveToPoint({direction * -16.75_in, 37_in});
