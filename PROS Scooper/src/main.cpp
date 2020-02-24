@@ -97,9 +97,7 @@ void open_grabber() {
 void autonomous() {
 	int direction = 1; //1 is blue, -1 is red
 	//Start with cube already clamped close in bot
-	chassis->setState({0_in, 0_in, 90_deg});
-	chassis->setMaxVelocity(50);
-	chassis->driveToPoint({0_in, 10_in});
+	//All x locations are reversed cause IDK
 	/*
 	close_grabber();
 	chassis->driveToPoint({direction * -16.75_in, 37_in});
