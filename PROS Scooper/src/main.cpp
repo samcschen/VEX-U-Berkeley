@@ -87,9 +87,9 @@ void lower_arm_mid() {
  right_lift.moveRelative(-1.8,70);
 }
 void lift_arm_short() {
-	left_lift.moveRelative(1.6,70);
-	right_lift.moveRelative(1.6,70);
-	pros::delay(3000);
+	left_lift.moveRelative(1.55,70);
+	right_lift.moveRelative(1.55,70);
+	pros::delay(2000);
 }
 void lower_arm_short() {
  left_lift.moveRelative(-1.6,70);
@@ -103,6 +103,18 @@ void open_grabber() {
 	left_gripper.moveRelative(-4, 70);
 	right_gripper.moveRelative(-4, 70);
 }
+void place_low_tower(int team) {
+	//Start 14 inches away from center of tower, facing down
+	lift_arm_short(); //lift arm holding cube to mid tower height
+	chassis->setMaxVelocity(50);
+	chassis->turnAngle(90_deg);
+	chassis->moveDistance(6_in); //moves up to tower
+	open_grabber(); //place cube in tower
+	pros::delay(2000);
+	chassis->moveDistance(-6_in); //backs up from tower
+	chassis->turnAngle(-90_deg);
+	lower_arm_short(); //return to start
+}
 void place_mid_tower() {
 	//Start 20.5 inches away from center of tower
 	lift_arm_mid(); //lift arm holding cube to mid tower height
@@ -114,22 +126,24 @@ void place_mid_tower() {
 	lower_arm_mid(); //return to start
 }
 void autonomous() {
-	int direction = 1; //1 is blue, -1 is red
+	int team = 1; //1 is red, -1 is blue
 	//Start with cube clamped
-
-	chassis->setState({0_in, 0_in, 90_deg}); //facing +y-axis
-
-
-	/*
-	close_grabber();
-	chassis->driveToPoint({direction * -16.75_in, 37_in});
-	chassis->driveToPoint({direction * 0_in, 37_in});
-	chassis->turnToAngle(direction * 180_deg);
-	lift_arm();
-	chassis->driveToPoint({direction * 0_in, 35_in});
+	chassis->setMaxVelocity(50);
+	chassis->setState({0_in, 7.5_in, 0_deg});
+	chassis->driveToPoint({0_in, 18_in});//Drive forward a bit to not be against wall
+	chassis->driveToPoint({12_in, 34_in});
+	chassis->turnToAngle(0_deg);
+  //place_low_tower(team);
+  //close_grabber();
+	chassis->driveToPoint({12_in, 50_in});
+	chassis->driveToPoint({-12_in, 50_in});
 	open_grabber();
-	chassis->driveToPoint({direction * 0_in, 37_in});
-	lower_arm();//Goal is to get a single cube*/
+	pros::delay(500);
+	chassis->driveToPoint({-12_in, 57_in});
+	close_grabber();
+	chassis->driveToPoint({-12_in, 58_in});
+	chassis->turnToAngle(-90_deg);
+	place_low_tower(team);
 }
 
 /**

@@ -14,7 +14,7 @@
 auto chassis = ChassisControllerBuilder()
     .withMotors({LEFT_DRIVE_TWO_PORT, LEFT_DRIVE_ONE_PORT}, {RIGHT_DRIVE_TWO_PORT, RIGHT_DRIVE_ONE_PORT})
     .withDimensions(AbstractMotor::gearset::green, {{4_in, 11.9327809104_in}, imev5GreenTPR})
-    .withOdometry()
+    .withOdometry(StateMode::CARTESIAN)
     .buildOdometry();
 
 //intake boi buttons/motors
