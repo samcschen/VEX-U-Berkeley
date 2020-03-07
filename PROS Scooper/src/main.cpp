@@ -129,20 +129,20 @@ void autonomous() {
 	int team = 1; //1 is red, -1 is blue
 	//Start with cube clamped
 	chassis->setMaxVelocity(50);
-	chassis->setState({0_in, 7.5_in, 0_deg});
-	chassis->driveToPoint({0_in, 18_in});//Drive forward a bit to not be against wall
-	chassis->driveToPoint({12_in, 34_in});
-	chassis->turnToAngle(0_deg);
+	chassis->setState({team * 0_in, 7.5_in, 0_deg});
+	chassis->driveToPoint({team * 0_in, 18_in});//Drive forward a bit to not be against wall
+	chassis->driveToPoint({team * 12_in, 34_in});
+	chassis->turnToAngle(team * 0_deg);
   //place_low_tower(team);
   //close_grabber();
-	chassis->driveToPoint({12_in, 50_in});
-	chassis->driveToPoint({-12_in, 50_in});
+	chassis->driveToPoint({team * 12_in, 50_in});
+	chassis->driveToPoint({team * -12_in, 50_in});
 	open_grabber();
 	pros::delay(500);
-	chassis->driveToPoint({-12_in, 57_in});
+	chassis->driveToPoint({team * -12_in, 57_in});
 	close_grabber();
-	chassis->driveToPoint({-12_in, 58_in});
-	chassis->turnToAngle(-90_deg);
+	chassis->driveToPoint({team * -12_in, 58_in});
+	chassis->turnToAngle(team * -90_deg);
 	place_low_tower(team);
 }
 

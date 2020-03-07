@@ -3,6 +3,13 @@
 
 //Controls the two flapping spinning boys at the front of the robot
 void control_intake() {
+	if (btnBoth.isPressed()) {
+		left_intake.moveVelocity(300);
+		right_intake.moveVelocity(300);
+		left_indexer.moveVelocity(200);
+		right_indexer.moveVelocity(200);
+		return;
+	}
 	if (btnSuck.isPressed()) {
 		left_intake.moveVelocity(300);
 		right_intake.moveVelocity(300);
@@ -20,7 +27,7 @@ void control_intake() {
 }
 void place_tower() {
 	if (btnSpit.isPressed()) {
-		chassis->getModel()->forward(-40);
+		chassis->getModel()->forward(-.01);
 		left_intake.moveVelocity(-20);
 		right_intake.moveVelocity(-20);
 		left_indexer.moveVelocity(-30);
@@ -30,9 +37,9 @@ void place_tower() {
 //Controls the ramp letting them lift up and down
 void control_ramp() {
 	if (btnLift.isPressed()){
-		lift.moveVelocity(200);
+		lift.moveVelocity(30);
 	} else if (btnDrop.isPressed()){
-		lift.moveVelocity(-200);
+		lift.moveVelocity(-30);
 	} else {
 		lift.moveVelocity(0);
 	}
@@ -49,7 +56,7 @@ void initialize() {
 	left_intake.setBrakeMode(AbstractMotor::brakeMode::hold);
 	right_intake.setBrakeMode(AbstractMotor::brakeMode::hold);
 	lift.setBrakeMode(AbstractMotor::brakeMode::hold);
-	lift.setBrakeMode(AbstractMotor::brakeMode::hold);
+	lift.setEncoderUnits(AbstractMotor::encoderUnits::rotations);
 }
 
 /**
@@ -83,13 +90,22 @@ void disable_intake() {
 	left_indexer.moveVelocity(0);
 	right_indexer.moveVelocity(0);
 }
-
-void outtake() {
-	chassis->getModel()->forward(-40);
+void initialize_ramp() {
+	lift.moveRelative(.1, 30);
+}
+void lift_ramp() {
+	lift.moveRelative(1.7, 30);
+}
+void lower_ramp() {
+	lift.moveRelative(-1.6, 10);
+}
+void score_stack() {
+	chassis->getModel()->forward(-.03);
 	left_intake.moveVelocity(-20);
 	right_intake.moveVelocity(-20);
 	left_indexer.moveVelocity(-30);
 	right_indexer.moveVelocity(-30);
+	pros::delay(5000);
 }
 /**
  * Runs the user autonomous code. This function will be started in its own task
@@ -105,23 +121,23 @@ void outtake() {
 void autonomous() {
 	int team = 1;//1 is red, -1 is blue
 	chassis->setMaxVelocity(50);
-	chassis->setState({-2.75_in, 7.5_in, 0_deg});
+	chassis->setState({team * -2.75_in, 7.5_in, 0_deg});
 	forward_intake();
-	chassis->driveToPoint({-2.75_in, 26.75_in});
-	chassis->driveToPoint({-24_in, 26.75_in});
-	chassis->driveToPoint({-24_in, 26.75_in});
-	chassis->driveToPoint({17.375_in, 26.75_in});
+	chassis->driveToPoint({team * -2.75_in, 26.75_in});
+	chassis->driveToPoint({team * -24_in, 26.75_in});
+	chassis->driveToPoint({team * -24_in, 26.75_in});
+	chassis->driveToPoint({team * 17.375_in, 26.75_in});
 	chassis->moveDistance(-7_in);
 
-	chassis->setState({10.375_in, 26.75_in, 90_deg});
-	chassis->driveToPoint({-20_in, 26.75_in});
-	chassis->driveToPoint({-20_in, 50.75_in});
-	chassis->driveToPoint({-12_in, 50.75_in});
-	chassis->driveToPoint({-12_in, 65.375_in});
-	chassis->moveDistance(-5_in);
-	chassis->setState({-12_in, 65.375_in, 0_deg});
-	chassis->driveToPoint({-24_in, 12_in});
-	chassis->driveToPoint({-24_in, 12_in});
+	chassis->setState({team * 10.375_in, 26.75_in, 90_deg});
+	chassis->driveToPoint({team * -20_in, 26.75_in});
+	chassis->driveToPoint({team * -20_in, 50.75_in});
+	chassis->driveToPoint({team * -12_in, 50.75_in});
+	chassis->driveToPoint({team * -12_in, 65.375_in});
+	chassis->moveDistance(team * -5_in);
+	chassis->setState({team * -12_in, 65.375_in, 0_deg});
+	chassis->driveToPoint({team * -24_in, 12_in});
+	chassis->driveToPoint({team * -24_in, 12_in});
 }
 
 /**
@@ -140,11 +156,11 @@ void autonomous() {
 void opcontrol() {
 	chassis->setMaxVelocity(600);
 	while (true) {
-		chassis->getModel()->arcade(master.getAnalog(ControllerAnalog::leftY),
-                           master.getAnalog(ControllerAnalog::rightX));
 		control_ramp();
 		control_intake();
 		place_tower();
+		chassis->getModel()->arcade(master.getAnalog(ControllerAnalog::leftY),
+	            master.getAnalog(ControllerAnalog::rightX));
 		pros::delay(10);
 	}
 }
