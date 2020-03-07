@@ -4,32 +4,38 @@
 //Controls the two flapping spinning boys at the front of the robot
 void control_intake() {
 	if (btnSuck.isPressed()) {
-		left_intake.moveVelocity(200);
-		right_intake.moveVelocity(200);
-	} else if (btnSpit.isPressed()) {
-		left_intake.moveVelocity(-200);
-		right_intake.moveVelocity(-200);
+		left_intake.moveVelocity(300);
+		right_intake.moveVelocity(300);
 	} else {
 		left_intake.moveVelocity(0);
 		right_intake.moveVelocity(0);
 	}
-}
-//Controls the arms letting them lift up and down. Should be a right and left Motor
-void control_arm() {
-	if (btnLift.isPressed()){
-		left_lift.moveVelocity(100);
-		right_lift.moveVelocity(100);
-	} else if (btnDrop.isPressed()){
-		left_lift.moveVelocity(-100);
-		right_lift.moveVelocity(-100);
+	if (btnIndex.isPressed()) {
+		left_indexer.moveVelocity(200);
+		right_indexer.moveVelocity(200);
 	} else {
-		left_lift.moveVelocity(0);
-		right_lift.moveVelocity(0);
+		left_indexer.moveVelocity(0);
+		right_indexer.moveVelocity(0);
 	}
 }
-//Controls the mechanism that allows standing the backplate vertical. One Motor
-void control_kicker() {
-
+void place_tower() {
+	if (btnSpit.isPressed()) {
+		chassis->getModel()->forward(-40);
+		left_intake.moveVelocity(-20);
+		right_intake.moveVelocity(-20);
+		left_indexer.moveVelocity(-30);
+		right_indexer.moveVelocity(-30);
+	}
+}
+//Controls the ramp letting them lift up and down
+void control_ramp() {
+	if (btnLift.isPressed()){
+		lift.moveVelocity(200);
+	} else if (btnDrop.isPressed()){
+		lift.moveVelocity(-200);
+	} else {
+		lift.moveVelocity(0);
+	}
 }
 /**
  * Runs initialization code. This occurs as soon as the program is started.
@@ -42,8 +48,8 @@ void initialize() {
 	pros::lcd::set_text(1, "Hello PROS User!");
 	left_intake.setBrakeMode(AbstractMotor::brakeMode::hold);
 	right_intake.setBrakeMode(AbstractMotor::brakeMode::hold);
-	left_lift.setBrakeMode(AbstractMotor::brakeMode::hold);
-	right_lift.setBrakeMode(AbstractMotor::brakeMode::hold);
+	lift.setBrakeMode(AbstractMotor::brakeMode::hold);
+	lift.setBrakeMode(AbstractMotor::brakeMode::hold);
 }
 
 /**
@@ -64,27 +70,26 @@ void disabled() {}
  */
 void competition_initialize() {}
 
-void intake_cube_autonomous(int num_cubes) {
-	double prev_max_velocity = chassis->getMaxVelocity();
-	chassis->setMaxVelocity(50);
+void forward_intake() {
 	left_intake.moveVelocity(200);
 	right_intake.moveVelocity(200);
-	pros::delay(400);
-	double distance = 0.5 + (num_cubes - 1) * 5.5;
-	chassis->moveDistance(distance * 1_in);
-	pros::delay(100);
-	left_intake.moveVelocity(0);
-	right_intake.moveVelocity(0);
-	chassis->moveDistance(distance * -1_in);
-	chassis->setMaxVelocity(prev_max_velocity);
+	left_indexer.moveVelocity(200);
+	right_indexer.moveVelocity(200);
 }
 
-void output_cube_autonomous() {
-	left_intake.moveVelocity(-100);
-	right_intake.moveVelocity(-100);
-	pros::delay(700);
+void disable_intake() {
 	left_intake.moveVelocity(0);
 	right_intake.moveVelocity(0);
+	left_indexer.moveVelocity(0);
+	right_indexer.moveVelocity(0);
+}
+
+void outtake() {
+	chassis->getModel()->forward(-40);
+	left_intake.moveVelocity(-20);
+	right_intake.moveVelocity(-20);
+	left_indexer.moveVelocity(-30);
+	right_indexer.moveVelocity(-30);
 }
 /**
  * Runs the user autonomous code. This function will be started in its own task
@@ -98,33 +103,25 @@ void output_cube_autonomous() {
  * from where it left off.
  */
 void autonomous() {
-	int direction = 1;//1 is blue, -1 is red
-	chassis->moveDistance(1_ft);
-	output_cube_autonomous();
-	chassis->moveDistance(-1_ft);
-	chassis->moveDistance(1_ft);
-	output_cube_autonomous();
-	chassis->moveDistance(-1_ft);
-	chassis->moveDistance(1_ft);
-	output_cube_autonomous();
-	chassis->moveDistance(-1_ft);
-	/*chassis->setState({direction * 2.75_in, 7.25_in, 0_deg});
+	int team = 1;//1 is red, -1 is blue
 	chassis->setMaxVelocity(50);
-	chassis->driveToPoint({direction * 2.75_in, 16.75_in});
-	intake_cube_autonomous(1);
-	chassis->driveToPoint({direction * 12_in, 26.75_in});
-	chassis->driveToPoint({direction * 16.75_in, 26.75_in});
-	intake_cube_autonomous(1);
-	chassis->driveToPoint({direction * 36_in, 12_in});
-	output_cube_autonomous();
-	chassis->driveToPoint({direction * -55_in, 7_in});
-	chassis->driveToPoint({direction * -55_in, 50.75_in});
-	chassis->turnToAngle(direction * -90_deg);
-	chassis->driveToPoint({direction * -66.5_in, 50.75_in});
-	intake_cube_autonomous(1);
-	chassis->driveToPoint({direction * -60_in, 60.96_in});
-	chassis->driveToPoint({direction * -60_in, 12_in});
-	chassis->driveToPoint({direction * 	-74_in, 12_in});*/
+	chassis->setState({-2.75_in, 7.5_in, 0_deg});
+	forward_intake();
+	chassis->driveToPoint({-2.75_in, 26.75_in});
+	chassis->driveToPoint({-24_in, 26.75_in});
+	chassis->driveToPoint({-24_in, 26.75_in});
+	chassis->driveToPoint({17.375_in, 26.75_in});
+	chassis->moveDistance(-7_in);
+
+	chassis->setState({10.375_in, 26.75_in, 90_deg});
+	chassis->driveToPoint({-20_in, 26.75_in});
+	chassis->driveToPoint({-20_in, 50.75_in});
+	chassis->driveToPoint({-12_in, 50.75_in});
+	chassis->driveToPoint({-12_in, 65.375_in});
+	chassis->moveDistance(-5_in);
+	chassis->setState({-12_in, 65.375_in, 0_deg});
+	chassis->driveToPoint({-24_in, 12_in});
+	chassis->driveToPoint({-24_in, 12_in});
 }
 
 /**
@@ -145,9 +142,9 @@ void opcontrol() {
 	while (true) {
 		chassis->getModel()->arcade(master.getAnalog(ControllerAnalog::leftY),
                            master.getAnalog(ControllerAnalog::rightX));
-		control_arm();
-		control_kicker();
+		control_ramp();
 		control_intake();
+		place_tower();
 		pros::delay(10);
 	}
 }
